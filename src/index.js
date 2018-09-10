@@ -21,6 +21,7 @@ const schema = gql`
     type Mutation {
         createMessage(text: String!): Message!
         deleteMessage(id: ID!): Boolean!
+        updateMessage(id: ID! text: String!): Message!
     }
 
     type User {
@@ -108,7 +109,7 @@ const resolvers = {
 
             return message;
         },
-        deleteMessage: (parent, { id }, { me }) => {
+        deleteMessage: (parent, { id }) => {
             const { [id]: message, ...otherMessages } = messages;
             if (!message) {
                 return false;
@@ -117,6 +118,12 @@ const resolvers = {
             messages = otherMessages;
 
             return true;
+        },
+        updateMessage: (parent, { id, text }) => {
+            const { [id]: message } = messages;
+            messages[id].text = text;
+
+            return message;
         },
     },
     User: {
